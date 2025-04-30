@@ -407,12 +407,19 @@ const Advertising = () => {
     };
 
     return (
+
+        <>
         <div className="card">
             <Dialog header="Add Apartment" visible={visible} modal onHide={() => setVisible(false)} footer={dialogFooter}>
                 <Add setVisible={setVisible} setProducts={setProducts} />
             </Dialog>
+
+          
             <DataView value={products} listTemplate={listTemplate} layout={layout} header={header()} />
-        </div>
+           
+
+        </div></>
+
     );
 }
 

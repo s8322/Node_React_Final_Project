@@ -29,7 +29,9 @@ const Auth = () => {
             const res = await axios({
                 method: 'post',
                 url: 'http://localhost:8000/auth/login',
+
                 headers: { 'Content-Type': 'application/json'},
+
                 data: {
                     email:email,
                     password: password
@@ -49,6 +51,7 @@ const Auth = () => {
             }
         }
         catch (e) {
+
             if (e.response) {
                 console.error('Response error:', e.response.data);
             } else if (e.request) {
@@ -57,6 +60,10 @@ const Auth = () => {
                 console.error('Error setting up request:', e.message);
             }
             alert("Unauthorized user");
+// =======
+//             console.error(e)
+//             alert("Unauthorized user")
+// >>>>>>> 61065daf96463ed8dcaefc9bcb6834f19fd8488b
         }
     }
 

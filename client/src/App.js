@@ -20,11 +20,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import Advertising from './Components/Advertising'
 // import Apartment from './Components./apartments/Apartments';
 import Apartments from './Components/apartments/Apartments';
+
+import Apartment from './Components/apartments/Apartments';
+import Users from './Components/users/Users';
+
 import MyApartment from './Components/myAppartments/myAppartments';
 import Add from './Components/apartments/Add';
 import Register from './Components/Auth/Register';
 import NavBarManager from './Components/NavBarManager';
+
 import Apartment from './Components/apartments/Apartment';
+
+import Update from './Components/apartments/Update';
+
 function App() {
   const navigate = useNavigate()
   const {user} = useSelector((state) => state.token);
@@ -40,6 +48,7 @@ function App() {
   return (
     <Provider store={store}>
     <PrimeReactProvider>
+
       <div className="App">
        {roles=="User"?<NavBar/>:roles=="Admin"?<NavBarManager/>:<></>}
         <Routes>
@@ -51,10 +60,17 @@ function App() {
           <Route path='/logOut' element={<LogOut />} />
           <Route path='/advertising' element={<Advertising />} />
           <Route path='/addApartment' element={<Add />} />
+
           <Route path='/r' element={<Register />} />
           {/* <Route path='/auth' element={<Auth />} /> */}
           <Route path='/myApartments' element={<MyApartment />} />
           <Route path='/Apartment' element={<Apartment />} />
+
+          <Route path='/apartment' element={<Apartment />} />
+          <Route path='/users' element={<Users />} />
+
+          {/* <Route path='/auth' element={<Auth />} /> */}
+          <Route path='/myApartments' element={<MyApartment />} />
 
           {/* {<Route path='/products' element={<Product />} />} */}
         </Routes>

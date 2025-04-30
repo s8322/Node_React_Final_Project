@@ -12,6 +12,15 @@ import NavBar from '../NavBar';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 
+// import { Rating } from 'primereact/rating';
+// import { Tag } from 'primereact/tag';
+import { classNames } from 'primereact/utils';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+// import { fetchApartments } from '../../slices/apartmentSlice'; // עדכן את הנתיב 
+// import NavBar from '../NavBar';
+import axios from 'axios';
+import { ToggleButton } from 'primereact/togglebutton';
 const Apartments = () => {
 //     const dispatch = useDispatch();
 //     const apartments = useSelector((state) => state.apartments.items);
@@ -23,39 +32,85 @@ const Apartments = () => {
 
     // if (loading) return <div>Loading...</div>;
     const { roles} = useSelector((state) => state.token);
+// <<<<<<< HEAD
 
+//     const [products, setProducts] = useState([]);
+//     const [layout, setLayout] = useState('grid');
+//     const navigate = useNavigate();
+
+//     useEffect(() => {
+//         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
+//     }, []);
+//     ////////////////////
+// const perm=async(product)=>{
+//     try {
+//         const res = await axios.put(`http://localhost:8000/apartment`,product)
+//         if (res.status === 200) {
+//             // console.log("carsUser",res.data)
+//             // console.log(res.data);
+//             return res.data;
+//         }
+//     } catch (e) {
+//         return [];
+//     }
+// }
+// const deleteApart=async(id)=>{
+//     try {
+//         const res = await axios.delete(`http://localhost:8000/apartment`,{ _id :id})
+//         if (res.status === 200) {
+//             // console.log("carsUser",res.data)
+//             // console.log(res.data);
+//             return res.data;
+//         }
+//     } catch (e) {
+//         return [];
+//     }
+// }///////////////////////////////
+// =======
+const navigate = useNavigate()
+    const [visible, setVisible]=useState(false)
     const [products, setProducts] = useState([]);
     const [layout, setLayout] = useState('grid');
-    const navigate = useNavigate();
-
     useEffect(() => {
         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
-    }, []);
-    ////////////////////
-const perm=async(product)=>{
+    }, [products]);
+
+    const perm=async(id)=>{
     try {
-        const res = await axios.put(`http://localhost:8000/apartment`,product)
+        const res = await axios({
+            method: 'put',
+            url: 'http://localhost:8000/apartment/perm',
+            headers: {},
+
+            data: {
+                _id:id
+            }
+        });
         if (res.status === 200) {
-            // console.log("carsUser",res.data)
-            // console.log(res.data);
-            return res.data;
-        }
+            setProducts(res.data)
+                }
     } catch (e) {
         return [];
-    }
-}
-const deleteApart=async(id)=>{
+    }}
+
+const deleteApart = async (id) => {   
     try {
-        const res = await axios.delete(`http://localhost:8000/apartment`,{ _id :id})
+        const res = await axios({
+            method: 'delete',
+            url: 'http://localhost:8000/apartment',
+            headers: {},
+
+            data: {
+                _id:id
+            }
+        });
         if (res.status === 200) {
-            // console.log("carsUser",res.data)
-            // console.log(res.data);
-            return res.data;
-        }
+            setProducts(res.data)
+                }
     } catch (e) {
         return [];
-    }
-}///////////////////////////////
+    }}
+    
     // const getSeverity = (product) => {
     //     switch (product.inventoryStatus) {
     //         case 'INSTOCK':
@@ -74,6 +129,7 @@ const deleteApart=async(id)=>{
 
     const listItem = (product, index) => {
         return (
+
             <div className="col-12" key={product.id}
             onClick={() => {
                 console.log('Navigating to Apartment');
@@ -82,6 +138,7 @@ const deleteApart=async(id)=>{
             style={{ cursor: 'pointer' }} // Add cursor pointer for better UX
             >
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
+
                     <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={"תמונה לא נמצאה"} />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
@@ -102,12 +159,31 @@ const deleteApart=async(id)=>{
                         <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                             <span className="text-2xl font-semibold">₪{product.price}</span>
                             <Button icon="pi pi-heart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+
+
+                            {roles==="Admin"&&<Button icon="pi pi-trash" className="p-button-rounded" onClick={()=>{deleteApart(product._id)}}></Button>} 
+                       {roles === "Admin" && (
+                        <Button
+                            icon="pi pi-update"
+                            style={{
+                                backgroundColor: product.permission ? "green" : "blue", // צבע לפי permission
+                                color: "white",
+                                borderRadius: "50%",
+                                border: "none",
+                                padding: "10px 20px",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => perm(product._id)}
+                        ></Button>
+                    )}
+
                         </div>
                     </div>
                 </div>
             </div>
         );
     };
+
 
     const gridItem = (product) => {
         return (
@@ -120,6 +196,7 @@ const deleteApart=async(id)=>{
             >
                 <div className="p-4 border-1 surface-border surface-card border-round">
                     <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+
                         <div className="flex align-items-center gap-2">
                             <i className="pi pi-map-marker"></i>
                             <span className="font-semibold">{`${product.address.city}, ${product.address.street}`}</span>
@@ -136,8 +213,22 @@ const deleteApart=async(id)=>{
                         <span className="text-2xl font-semibold">₪{product.price}</span>
                         {/* <span className="text-2xl font-semibold">₪{product.price.toFixed(2)}</span> */}
                         <Button icon="pi pi-heart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
-                       {roles=="Admin"&&<Button icon="pi pi-trash" className="p-button-rounded" onClick={()=>{deleteApart(product.id)}}></Button>} 
-                       {roles=="Admin"&&<Button icon="pi pi-update" className="p-button-rounded" onClick={()=>{perm(product)}} ></Button>} 
+
+                       {roles==="Admin"&&<Button icon="pi pi-trash" className="p-button-rounded" onClick={()=>{deleteApart(product._id)}}></Button>} 
+                       {roles === "Admin" && (
+                        <Button
+                            icon="pi pi-update"
+                            style={{
+                                backgroundColor: product.permission ? "green" : "blue", // צבע לפי permission
+                                color: "white",
+                                borderRadius: "50%",
+                                border: "none",
+                                padding: "10px 20px",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => perm(product._id)}
+                        ></Button>
+                    )}
 
                     </div>
                 </div>
@@ -149,8 +240,9 @@ const deleteApart=async(id)=>{
         if (!product) {
             return;
         }
-        if (!product.permision && roles=="User") {
-            console.log(product);
+
+        if (!product.permission && roles==="User") {
+
             
             return;
         }
@@ -176,7 +268,9 @@ const deleteApart=async(id)=>{
     };
 
     return (
-        <div className="card">
+
+
+        <div className="card" dir="rtl">
             <DataView value={products} listTemplate={listTemplate} layout={layout} header={header()} />
         </div>
     )

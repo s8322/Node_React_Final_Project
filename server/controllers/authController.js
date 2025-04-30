@@ -9,20 +9,26 @@ const register = async (req, res) => {
         return res.status(400).json({ Message: 'Missing required fields' })
     }
     const newAddress = await createAddress(address);
+
     const duplicate = await User.findOne({ email: email }).lean()
     if (duplicate) {
         return res.status(409).json({ Message: 'Existing user' })
     }
+
     console.log("after checking");
     const hashedPwd = await bcrypt.hash(password, 10)
     const userObject = { name, email, phone, address: newAddress._id.toString(), password: hashedPwd }
+
+
     const user = await User.create(userObject)
     if (user) {
         return res.status(201).json({ Message: 'User successfully registered' })//עדיף לעשות כניסה תו"כ
 
     }
     else {
+
         console.log("didnt crate");
+
         return res.status(400).json({ Message: 'Invalid user' })
     }
 }
@@ -41,7 +47,9 @@ const login = async (req, res) => {
     }
     const userInfo = { _id: foundUser._id, name: foundUser.name, email: foundUser.email, roles: foundUser.roles }
     const accessToken = jwt.sign(userInfo, process.env.ACCESS_TOKEN_SECRET)
+
     res.status(200).json({ accessToken: accessToken, user: userInfo })
+
 }
 
 module.exports = { register, login }

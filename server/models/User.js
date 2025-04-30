@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'Address',
         required: true
+
     },
     password: {
         type: String,

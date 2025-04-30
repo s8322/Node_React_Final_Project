@@ -1,12 +1,11 @@
 import axios from 'axios';
 export const ApartmentService = {
-    // getProductsData() {
+
         async getApartmentsData() {
             try {
                 const res = await axios.get(`http://localhost:8000/apartment`)
                 if (res.status === 200) {
-                    // console.log("carsUser",res.data)
-                    // console.log(res.data);
+
                     return res.data;
                 }
             } catch (e) {

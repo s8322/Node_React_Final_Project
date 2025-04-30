@@ -11,7 +11,9 @@ const createApartment = async (req, res) => {
     }
     const newAddress = await createAddress(address);
 
+
     const apartment = await Apartment.create({ user, address: newAddress._id, floor, price, description, img, size, numOfRooms, airDirections, options ,permision:false})
+
     if (apartment) {
         return res.status(201).json({ message: "The apartment has been added" })
     }
@@ -59,6 +61,20 @@ const getApartmentsByUserId = async (req, res) => {
         return res.status(400).json({ message: "No apartment found" })
     res.json(apartments)
 }
+
+const updatePermission = async (req, res) => {
+    const { _id } = req.body
+    if (!_id)
+        return res.status(400).json({ message: "id is required" })
+    const apartment = await Apartment.findById(_id).exec()
+    if (!apartment) {
+        return res.status(400).json({ message: "apartment not found" })
+    }
+    apartment.permission = !apartment.permission
+    const updatedApartment = await apartment.save()
+    const apartments = await Apartment.find().lean()
+    res.json(apartments)
+}
 const updateApartment = async (req, res) => {
     const { _id, user, address, floor, price, description, img, size, numOfRooms, airDirections, options } = req.body
     if (!_id || !user || !address)
@@ -83,6 +99,12 @@ const updateApartment = async (req, res) => {
 }
 const deleteApartment = async (req, res) => {
     const { _id } = req.body
+
+    
+    if(!_id){
+        console.log("no id")
+        return res.status(400).json({Messege: "no id"})
+    }
     const apartment = await Apartment.findById(_id).exec()
     deleteAddress(apartment.address.toString())
     if (!apartment) {
@@ -97,6 +119,7 @@ module.exports = {
     getAllApartment,
     getApartmentById,
     getApartmentsByUserId,
+    updatePermission,
     updateApartment,
     deleteApartment
 }

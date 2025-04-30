@@ -43,7 +43,9 @@ const apartmentSchema = new mongoose.Schema({
         type: [String],
         required: false
     },
-    permision:{
+
+    permission:{
+
         type: Boolean
     }
 }, { timestamps: true })

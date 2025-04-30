@@ -16,7 +16,9 @@ import { useDispatch } from 'react-redux';
 // import { CountryService } from '../service/CountryService';
 import './Register.css';
 const Register = (props) => {
-    // const dispatch = useDispatch();
+
+    const dispatch = useDispatch();
+    const [countries, setCountries] = useState([]);
     const [showMessage, setShowMessage] = useState(false);
     const [formData, setFormData] = useState({});
     // const [hide, setHise] = useState({});
@@ -32,6 +34,7 @@ const Register = (props) => {
         },
         password: ''
         })
+
 
     // useEffect(() => {
     //     countryservice.getCountries().then(data => setCountries(data));
@@ -56,6 +59,12 @@ const Register = (props) => {
                         street:defaultValues.address.street,
                         building:defaultValues.address.building
                     },
+// =======
+//                 headers: {},
+//                 data: {
+//                     name: defaultValues.name,
+//                     email: defaultValues.email,
+// >>>>>>> 61065daf96463ed8dcaefc9bcb6834f19fd8488b
                     password: defaultValues.password
                 }
             })
@@ -191,6 +200,7 @@ const Register = (props) => {
                             </div>
                             <div className="field">
                                 <span className="p-float-label">
+
                                     <Controller name="password" control={control} rules={{ required: 'Password is required.' }} render={({ field, fieldState }) => (
                                         <Password id={field.name} {...field} toggleMask className={classNames({ 'p-invalid': fieldState.invalid })} header={passwordHeader} footer={passwordFooter}
                                             onChange={(e) => (field.onChange(e.target.value), setDefaultValues(prevValues => ({ ...prevValues, password: e.target.value })))} />
