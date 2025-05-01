@@ -20,17 +20,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import Advertising from './Components/Advertising'
 // import Apartment from './Components./apartments/Apartments';
 import Apartments from './Components/apartments/Apartments';
-
-import Apartment from './Components/apartments/Apartments';
+import Apartment from './Components/apartments/Apartment';
 import Users from './Components/users/Users';
-
 import MyApartment from './Components/myAppartments/myAppartments';
 import Add from './Components/apartments/Add';
 import Register from './Components/Auth/Register';
 import NavBarManager from './Components/NavBarManager';
-
-import Apartment from './Components/apartments/Apartment';
-
+// import Apartment from './Components/apartments/Apartment';
 import Update from './Components/apartments/Update';
 
 function App() {
@@ -65,8 +61,7 @@ function App() {
           {/* <Route path='/auth' element={<Auth />} /> */}
           <Route path='/myApartments' element={<MyApartment />} />
           <Route path='/Apartment' element={<Apartment />} />
-
-          <Route path='/apartment' element={<Apartment />} />
+          {/* <Route path='/apartment' element={<Apartment />} /> */}
           <Route path='/users' element={<Users />} />
 
           {/* <Route path='/auth' element={<Auth />} /> */}

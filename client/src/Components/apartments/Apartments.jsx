@@ -5,21 +5,16 @@ import { Button } from 'primereact/button';
 import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
-import { classNames } from 'primereact/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchApartments } from '../../slices/apartmentSlice'; // עדכן את הנתיב 
 import NavBar from '../NavBar';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-
 // import { Rating } from 'primereact/rating';
 // import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 // import { fetchApartments } from '../../slices/apartmentSlice'; // עדכן את הנתיב 
 // import NavBar from '../NavBar';
-import axios from 'axios';
 import { ToggleButton } from 'primereact/togglebutton';
 const Apartments = () => {
 //     const dispatch = useDispatch();
@@ -70,28 +65,50 @@ const Apartments = () => {
 const navigate = useNavigate()
     const [visible, setVisible]=useState(false)
     const [products, setProducts] = useState([]);
+    // const [changeproduct, setChangeproduct]= useState(false)
     const [layout, setLayout] = useState('grid');
+
     useEffect(() => {
         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
     }, [products]);
 
-    const perm=async(id)=>{
-    try {
-        const res = await axios({
-            method: 'put',
-            url: 'http://localhost:8000/apartment/perm',
-            headers: {},
+    // const perm=async(id)=>{
+    // try {
+    //     const res = await axios({
+    //         method: 'put',
+    //         url: 'http://localhost:8000/apartment/perm',
+    //         headers: {},
 
-            data: {
-                _id:id
+    //         data: {
+    //             _id:id
+    //         }
+    //     });
+    //     if (res.status === 200) {
+    //         setProducts(res.data)
+    //             }
+    // } catch (e) {
+    //     return [];
+    // }}
+
+    const perm = async (id) => {
+        try {
+            const res = await axios.put('http://localhost:8000/apartment/perm', { _id: id });
+            if (res.status === 200) {
+                const updatedProduct = res.data; // נחזיר את הדירה המעודכנת
+    
+                // נעדכן את ה־state המקומי
+                setProducts(prevProducts =>
+                    prevProducts.map(p =>
+                        p._id === updatedProduct._id ? updatedProduct : p
+                    )
+                );
             }
-        });
-        if (res.status === 200) {
-            setProducts(res.data)
-                }
-    } catch (e) {
-        return [];
-    }}
+        } catch (e) {
+            console.error('שגיאה בהפעלת הרשאה:', e);
+        }
+    };
+
+    
 
 const deleteApart = async (id) => {   
     try {
@@ -130,7 +147,7 @@ const deleteApart = async (id) => {
     const listItem = (product, index) => {
         return (
 
-            <div className="col-12" key={product.id}
+            <div className="col-12" key={product._id}
             onClick={() => {
                 console.log('Navigating to Apartment');
                 navigate(`/Apartment`, { state: { product } });
@@ -173,7 +190,10 @@ const deleteApart = async (id) => {
                                 padding: "10px 20px",
                                 cursor: "pointer",
                             }}
-                            onClick={() => perm(product._id)}
+                            onClick={() => {
+                                perm(product._id);
+                                
+                            }}
                         ></Button>
                     )}
 
@@ -187,7 +207,7 @@ const deleteApart = async (id) => {
 
     const gridItem = (product) => {
         return (
-            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product.id} 
+            <div className="col-12 sm:col-6 lg:col-12 xl:col-4 p-2" key={product._id} 
             onClick={() => {
                 console.log('Navigating to Apartment');
                 navigate(`/Apartment`, { state: { product } });
