@@ -4,24 +4,38 @@ const { createAddress, getAllAddress, getAddressById, deleteAddress } = require(
 const mongoose = require('mongoose');
 
 const createApartment = async (req, res) => {
-    const { user, address, floor, price, description, img, size, numOfRooms, airDirections, options } = req.body
+    const { user, address, floor, price, description, size, numOfRooms, airDirections, options } = req.body;
+
     if (!user || !address) {
-
-        return res.status(400).json({ Message: 'missing required fields' })
+        return res.status(400).json({ message: 'Missing required fields' });
     }
-    const newAddress = await createAddress(address);
 
+    const parsedAddress = typeof address === 'string' ? JSON.parse(address) : address;
+    const newAddress = await createAddress(parsedAddress);
 
-    const apartment = await Apartment.create({ user, address: newAddress._id, floor, price, description, img, size, numOfRooms, airDirections, options ,permision:false})
+    const img = req.files?.map(file => `http://localhost:8000/uploads/${file.filename}`); // מייצר URL לכל תמונה
+
+    const apartment = await Apartment.create({
+        user,
+        address: newAddress._id,
+        floor,
+        price,
+        description,
+        img,
+        size,
+        numOfRooms,
+        airDirections,
+        options,
+        permission: false
+    });
 
     if (apartment) {
-        return res.status(201).json({ message: "The apartment has been added" })
+        return res.status(201).json({ message: "The apartment has been added" });
+    } else {
+        return res.status(400).json({ message: "Invalid insertion" });
     }
-    else {
-        return res.status(400).json({ message: "Invalid insertion" })
-    }
+};
 
-}
 const getAllApartment = async (req, res) => {
     const apartments = await Apartment.find().sort({ title: 1 })
         .populate('address') // Populate address

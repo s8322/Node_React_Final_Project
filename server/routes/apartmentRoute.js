@@ -4,8 +4,9 @@ const verifyJWT=require('../middleware/verifyJWT')
 const router = express.Router()
 const Apartment = require("../models/Apartment")
 const apartmentController = require("../controllers/apartmentController")
+const upload = require('../middleware/upload');
 // router.use(verifyJWT)
-router.post("/", verifyJWT,apartmentController.createApartment)
+router.post("/", verifyJWT, upload.array('img', 6), apartmentController.createApartment);
 router.get("/", apartmentController.getAllApartment)
 router.get("/:id", apartmentController.getApartmentById)
 router.get("/userid/:id", apartmentController.getApartmentsByUserId)

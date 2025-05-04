@@ -10,93 +10,31 @@ import { fetchApartments } from '../../slices/apartmentSlice'; // עדכן את 
 import NavBar from '../NavBar';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-// import { Rating } from 'primereact/rating';
-// import { Tag } from 'primereact/tag';
+
 import { classNames } from 'primereact/utils';
-// import { fetchApartments } from '../../slices/apartmentSlice'; // עדכן את הנתיב 
-// import NavBar from '../NavBar';
+
 import { ToggleButton } from 'primereact/togglebutton';
 const Apartments = () => {
-//     const dispatch = useDispatch();
-//     const apartments = useSelector((state) => state.apartments.items);
-//     const loading = useSelector((state) => state.apartments.loading);
 
-    // useEffect(() => {
-    //     dispatch(fetchApartments());
-    // }, [dispatch]);
-
-    // if (loading) return <div>Loading...</div>;
     const { roles} = useSelector((state) => state.token);
-// <<<<<<< HEAD
 
-//     const [products, setProducts] = useState([]);
-//     const [layout, setLayout] = useState('grid');
-//     const navigate = useNavigate();
-
-//     useEffect(() => {
-//         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
-//     }, []);
-//     ////////////////////
-// const perm=async(product)=>{
-//     try {
-//         const res = await axios.put(`http://localhost:8000/apartment`,product)
-//         if (res.status === 200) {
-//             // console.log("carsUser",res.data)
-//             // console.log(res.data);
-//             return res.data;
-//         }
-//     } catch (e) {
-//         return [];
-//     }
-// }
-// const deleteApart=async(id)=>{
-//     try {
-//         const res = await axios.delete(`http://localhost:8000/apartment`,{ _id :id})
-//         if (res.status === 200) {
-//             // console.log("carsUser",res.data)
-//             // console.log(res.data);
-//             return res.data;
-//         }
-//     } catch (e) {
-//         return [];
-//     }
-// }///////////////////////////////
-// =======
 const navigate = useNavigate()
     const [visible, setVisible]=useState(false)
     const [products, setProducts] = useState([]);
-    // const [changeproduct, setChangeproduct]= useState(false)
     const [layout, setLayout] = useState('grid');
 
     useEffect(() => {
         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
     }, [products]);
 
-    // const perm=async(id)=>{
-    // try {
-    //     const res = await axios({
-    //         method: 'put',
-    //         url: 'http://localhost:8000/apartment/perm',
-    //         headers: {},
-
-    //         data: {
-    //             _id:id
-    //         }
-    //     });
-    //     if (res.status === 200) {
-    //         setProducts(res.data)
-    //             }
-    // } catch (e) {
-    //     return [];
-    // }}
+    
 
     const perm = async (id) => {
         try {
             const res = await axios.put('http://localhost:8000/apartment/perm', { _id: id });
             if (res.status === 200) {
-                const updatedProduct = res.data; // נחזיר את הדירה המעודכנת
+                const updatedProduct = res.data; 
     
-                // נעדכן את ה־state המקומי
                 setProducts(prevProducts =>
                     prevProducts.map(p =>
                         p._id === updatedProduct._id ? updatedProduct : p
@@ -128,21 +66,7 @@ const deleteApart = async (id) => {
         return [];
     }}
     
-    // const getSeverity = (product) => {
-    //     switch (product.inventoryStatus) {
-    //         case 'INSTOCK':
-    //             return 'success';
-
-    //         case 'LOWSTOCK':
-    //             return 'warning';
-
-    //         case 'OUTOFSTOCK':
-    //             return 'danger';
-
-    //         default:
-    //             return null;
-    //     }
-    // };
+    
 
     const listItem = (product, index) => {
         return (
@@ -155,8 +79,11 @@ const deleteApart = async (id) => {
             style={{ cursor: 'pointer' }} // Add cursor pointer for better UX
             >
                 <div className={classNames('flex flex-column xl:flex-row xl:align-items-start p-4 gap-4', { 'border-top-1 surface-border': index !== 0 })}>
-
-                    <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={"תמונה לא נמצאה"} />
+                <img
+                className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                src={`http://localhost:8000/uploads/${product.img?.[0]}`} // מציג את התמונה הראשונה עם כתובת מלאה
+                alt="תמונה לא זמינה"
+                />
                     <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
                         <div className="flex flex-column align-items-center sm:align-items-start gap-3">
                         <span className="flex align-items-center gap-2">
@@ -224,8 +151,11 @@ const deleteApart = async (id) => {
                         {/* <Tag value={product.inventoryStatus} severity={getSeverity(product)}></Tag> */}
                     </div>
                     <div className="flex flex-column align-items-center gap-3 py-5">
-                        <img className="w-9 shadow-2 border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={"תמונה לא נמצאה"} />
-                        <div className="text-2xl font-bold">{`${product.size} מ"ר ${product.numOfRooms} חדרים`}</div>
+                    <img
+                    className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round"
+                    src={`http://localhost:8000/uploads/${product.img?.[0]}`} // מציג את התמונה הראשונה עם כתובת מלאה
+                    alt="תמונה לא זמינה"
+                    />                        <div className="text-2xl font-bold">{`${product.size} מ"ר ${product.numOfRooms} חדרים`}</div>
                         {/* <Rating value={product.rating} readOnly cancel={false}></Rating> */}
                         <span className="font-semibold">{product.description}</span>
                     </div>

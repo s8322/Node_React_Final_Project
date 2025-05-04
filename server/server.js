@@ -14,6 +14,7 @@ app.use('/auth',require('./routes/authRoute'))
 app.use('/user',require('./routes/userRoute'))
 app.use('/apartment',require('./routes/apartmentRoute'))
 app.use('/myApartment',require('./routes/myApartmentRoute'))
+app.use('/uploads', express.static('uploads'));
 mongoose.connection.once('open', () => {
     console.log('connected to mongoDB')
     app.listen(PORT, () => {
