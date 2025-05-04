@@ -42,43 +42,34 @@ const Register = (props) => {
     const { control, formState: { errors }, handleSubmit, reset } = useForm({ defaultValues });
 
     const onSubmit = async (data) => {
-        console.log(defaultValues);
-        debugger
         try {
-            const res = await axios({
-                method: 'post',
-                url: 'http://localhost:8000/auth/register',
-                headers: {'Content-Type': 'application/json'},
-                data: {
-                    name: defaultValues.name,
-                    email: defaultValues.email,
-                    phone:defaultValues.phone,
-                    address:{
-                        city:defaultValues.address.city,
-                        neighborhood:defaultValues.address.neighborhood,
-                        street:defaultValues.address.street,
-                        building:defaultValues.address.building
-                    },
-// =======
-//                 headers: {},
-//                 data: {
-//                     name: defaultValues.name,
-//                     email: defaultValues.email,
-// >>>>>>> 61065daf96463ed8dcaefc9bcb6834f19fd8488b
-                    password: defaultValues.password
-                }
-            })
-            if (res.status === 200) {
+            const address = {
+                city: defaultValues.address.city,
+                neighborhood: defaultValues.address.neighborhood || '',
+                street: defaultValues.address.street,
+                building: defaultValues.address.building
+            };
+    
+            const res = await axios.post('http://localhost:8000/auth/register', {
+                name: defaultValues.name,
+                email: defaultValues.email,
+                phone: defaultValues.phone,
+                address,
+                password: defaultValues.password
+            }, {
+                headers: { 'Content-Type': 'application/json' },
+            });
+    
+            if (res.status === 201) {
                 setFormData(data);
                 setShowMessage(true);
-                alert("you come in")
+                alert("you come in");
             }
+        } catch (error) {
+            console.error('Registration error:', error); 
+            alert("Unauthorized user"); 
         }
-        catch (e) {
-            console.error(e)
-            alert("Unauthorized user")
-        }
-
+    
         reset();
     };
 

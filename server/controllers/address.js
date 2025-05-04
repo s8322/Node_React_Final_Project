@@ -4,17 +4,16 @@ const createAddress = async (address) => {
     const { city, neighborhood, street, building } = address;
 
     if (!city || !street || !building) {
-        return 'missing required fields'
+        throw new Error('Missing required address fields: city, street, or building.');
     }
-    const address1 = await Address.create({ city, neighborhood, street, building })
-    if (address1) {
-        return address1
+    try {
+        const newAddress = await Address.create({ city, neighborhood, street, building });
+        return newAddress;
+    } catch (error) {
+        console.error('Error creating address:', error);
+        throw new Error('Failed to create address.');
     }
-    else {
-        return "didn't succeeded";
-    }
-
-}
+};
 const deleteAddress = async (address) => {
     const address1 = await Address.findById(address).exec()
     if (!address1) {
