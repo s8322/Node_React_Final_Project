@@ -30,6 +30,7 @@ const createApartment = async (req, res) => {
     });
 
     if (apartment) {
+
         return res.status(201).json({ message: "The apartment has been added" });
     } else {
         return res.status(400).json({ message: "Invalid insertion" });
@@ -69,7 +70,7 @@ const getApartmentById = async (req, res) => {
 const getApartmentsByUserId = async (req, res) => {
     
     const { id } = req.params
-    const apartments = await Apartment.find({user:id})
+    const apartments = await Apartment.find({user:id}).populate('address')
         .lean();
     if (!apartments)
         return res.status(400).json({ message: "No apartment found" })

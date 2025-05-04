@@ -1010,7 +1010,7 @@ import { classNames } from 'primereact/utils';
 import { useSelector } from 'react-redux';
 import ApartmentService from "./ApartmentService";
 import { Dropdown } from 'primereact/dropdown';
-const Add = ({ setVisible, setProducts }) => {
+const Add = ({ setVisible, setProducts,setAdd }) => {
   const { user, token } = useSelector((state) => state.token);
   const { control, handleSubmit, formState: { errors } } = useForm();
   const [showMessage, setShowMessage] = useState(false);
@@ -1042,8 +1042,10 @@ const Add = ({ setVisible, setProducts }) => {
       });
 
       if (res.status === 201) {
-        const fetchedProducts = await ApartmentService.getProducts();
-        setProducts(fetchedProducts.slice(0, 12));
+       setAdd(res.data)
+
+      //  const fetchedProducts = await ApartmentService.getProducts();
+      //   setProducts(fetchedProducts.slice(0, 12));
         setShowMessage(true);
         setVisible(false);
       }
