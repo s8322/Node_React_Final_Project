@@ -4,34 +4,49 @@ const { createAddress, getAllAddress, getAddressById, deleteAddress } = require(
 const jwt = require('jsonwebtoken')
 const register = async (req, res) => {
     console.log("in register");
-    const { name, email, phone, address, password } = req.body
-    if (!name || !email || !password|| !address) {
-        return res.status(400).json({ Message: 'Missing required fields' })
-    }
-    const newAddress = await createAddress(address);
+    const { name, email, phone, address, password } = req.body;
 
-    const duplicate = await User.findOne({ email: email }).lean()
-    if (duplicate) {
-        return res.status(409).json({ Message: 'Existing user' })
+    // וודא שכל השדות הנדרשים נשלחים
+    if (!name || !email || !password || !address) {
+        return res.status(400).json({ Message: 'Missing required fields: name, email, password, or address.' });
     }
 
-    console.log("after checking");
-    const hashedPwd = await bcrypt.hash(password, 10)
-    const userObject = { name, email, phone, address: newAddress._id.toString(), password: hashedPwd }
+    try {
+        console.log("Checking for duplicate user...");
+        const duplicate = await User.findOne({ email }).lean();
+        if (duplicate) {
+            return res.status(409).json({ Message: 'User already exists.' });
+        }
 
+        console.log("Creating address...");
+        const newAddress = await createAddress(address); // ייתכן שהבעיה כאן
 
-    const user = await User.create(userObject)
-    if (user) {
-        return res.status(201).json({ Message: 'User successfully registered' })//עדיף לעשות כניסה תו"כ
+        console.log("Hashing password...");
+        const hashedPwd = await bcrypt.hash(password, 10);
 
+        console.log("Creating user...");
+        const userObject = { 
+            name, 
+            email, 
+            phone, 
+            address: newAddress._id.toString(), 
+            password: hashedPwd 
+        };
+
+        const user = await User.create(userObject);
+
+        if (user) {
+            console.log("User created successfully.");
+            return res.status(201).json({ Message: 'User successfully registered.' });
+        } else {
+            console.log("Failed to create user.");
+            return res.status(400).json({ Message: 'Failed to register user.' });
+        }
+    } catch (error) {
+        console.error('Error during registration:', error); // הדפס את השגיאה
+        return res.status(500).json({ Message: 'Server error during registration.', error: error.message });
     }
-    else {
-
-        console.log("didnt crate");
-
-        return res.status(400).json({ Message: 'Invalid user' })
-    }
-}
+};
 const login = async (req, res) => {
     const { email, password } = req.body
     if (!email || !password) {
