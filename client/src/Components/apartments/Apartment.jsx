@@ -218,7 +218,7 @@ const Apartment = () => {
             }));
             setImages(formattedImages);
         }
-    }, [product]);
+    }, []);
 
     if (!product) {
         return <div className="text-center p-4">לא נמצאו פרטים על המוצר</div>;

@@ -36,6 +36,10 @@
     transform: rotate(360deg);
   }
 }
-
+@media (max-width: 768px) {
+  .navbar {
+      display: none; /* או עיצוב חלופי */
+  }
+}
 
 
