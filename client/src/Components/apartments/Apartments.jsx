@@ -1024,12 +1024,13 @@ const Apartments = () => {
     const { roles } = useSelector((state) => state.token);
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [permission, setPermission]=useState([]);
     const [layout, setLayout] = useState('grid');
 
     // Fetch apartments from service
     useEffect(() => {
         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
-    }, [products]);
+    }, [permission]);
 
     const perm = async (id) => {
         try {
@@ -1039,8 +1040,10 @@ const Apartments = () => {
                 setProducts((prevProducts) =>
                     prevProducts.map((p) =>
                         p._id === updatedProduct._id ? updatedProduct : p
+                
                     )
                 );
+                setPermission(res.data)
             }
         } catch (e) {
             console.error('Error updating permission:', e);

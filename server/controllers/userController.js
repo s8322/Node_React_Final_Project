@@ -7,7 +7,7 @@ const getAllUser = async (req, res) => {
     if (!users) {
         return res.status(400).json({ message: 'No users found' })
     }
-    res.json(users)
+    res.status(201).json(users)
 }
 const getUserById = async (req, res) => {
     const { id } = req.params
@@ -17,11 +17,17 @@ const getUserById = async (req, res) => {
     // user.address=AllAddress
     if (!user)
         return res.status(400).json({ message: 'No users found' })
-    res.json(user)
+    res.status(201).json(user)
 }
 const updateUser = async (req, res) => {
-    const { _id, name, email, phone, address, password, } = req.body
+    const {_id}=req.user
+    console.log(req.body);
+
+    const { name, email, phone, address, password, } = req.body
+    console.log(email,_id,password);
+
     if (!_id || !email|| !password)
+
         return res.status(400).json({ message: 'missing required fields' })
     const user = await User.findById(_id).exec()
     if (!user) {
@@ -34,7 +40,7 @@ const updateUser = async (req, res) => {
     user.password = hashedPwd
     const updatedUser = await user.save()
     const users = await User.find().lean()
-    res.json(users)
+    res.status(201).json(users)
 }
 const deleteUser = async (req, res) => {
     const { _id } = req.body
@@ -46,7 +52,7 @@ const deleteUser = async (req, res) => {
 
     const result = await user.deleteOne()
     const users = await User.find().lean()
-    res.json(users)
+    res.status(201).json(users)
 }
 module.exports = {
     getAllUser,

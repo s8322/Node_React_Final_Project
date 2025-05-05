@@ -9,7 +9,7 @@
 // const Apartment = () => {
 //     const location = useLocation();
 //     const product = location.state?.product; // קבלת נתוני המוצר
-    
+
 //     const [images, setImages] = useState([]); // אחסון התמונות בגלריה
 
 //     const responsiveOptions = [
@@ -187,7 +187,7 @@ import { Divider } from 'primereact/divider';
 const Apartment = () => {
     const location = useLocation();
     const product = location.state?.product; // קבלת נתוני המוצר
-    
+
     const [images, setImages] = useState([]); // אחסון התמונות בגלריה
 
     const responsiveOptions = [
@@ -227,36 +227,36 @@ const Apartment = () => {
     // תבנית לתמונה המלאה
     const itemTemplate = (item) => (
         <div style={{ width: '100%', height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <img 
-                src={item.itemImageSrc} 
-                alt={item.alt} 
+            <img
+                src={item.itemImageSrc}
+                alt={item.alt}
                 style={{
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover', // שמירה על פרופורציות
                     borderRadius: '8px'
-                }} 
+                }}
             />
         </div>
     );
 
     // תבנית לתמונה ממוזערת
     const thumbnailTemplate = (item) => (
-        <img 
-            src={item.thumbnailImageSrc} 
-            alt={item.alt} 
+        <img
+            src={item.thumbnailImageSrc}
+            alt={item.alt}
             style={{
                 width: '60px', // רוחב קטן עבור התמונות הממוזערות
                 height: '60px', // גובה קטן עבור התמונות הממוזערות
                 objectFit: 'cover', // שומר פרופורציות ומונע חיתוך
                 borderRadius: '4px' // פינות מעוגלות
-            }} 
+            }}
         />
     );
 
     return (
         <div className="flex justify-content-center align-items-center min-h-screen p-4">
-            <Card 
+            <Card
                 style={{ width: '90%', maxWidth: '1200px', backgroundColor: '#f8f9fa' }}
                 header={
                     <div className="flex justify-content-between align-items-center">
@@ -278,9 +278,9 @@ const Apartment = () => {
                 }
             >
                 {/* מבנה Grid עם שתי עמודות */}
-                <div 
-                    style={{ 
-                        display: 'grid', 
+                <div
+                    style={{
+                        display: 'grid',
                         gridTemplateColumns: '1fr 1fr', // 2 עמודות שוות
                         gap: '20px', // רווח בין העמודות
                         alignItems: 'start', // יישור תוכן למעלה
@@ -289,16 +289,16 @@ const Apartment = () => {
                     }}
                 >
                     {/* עמודה ימנית – גלריית תמונות */}
-                    <div 
-                        style={{ 
-                            borderRight: '1px solid #ddd', 
-                            paddingRight: '20px', 
-                            height: '100%' 
+                    <div
+                        style={{
+                            borderRight: '1px solid #ddd',
+                            paddingRight: '20px',
+                            height: '100%'
                         }}
                     >
                         <h3>תמונות:</h3>
                         {images.length > 0 ? (
-                            <Galleria 
+                            <Galleria
                                 value={images}
                                 responsiveOptions={responsiveOptions}
                                 numVisible={5}
@@ -329,10 +329,13 @@ const Apartment = () => {
                                 <p><strong>קומה:</strong> {product.floor || 'לא צוינה'}</p>
                                 <p><strong>גודל:</strong> {product.size} מ"ר</p>
                                 <p><strong>חדרים:</strong> {product.numOfRooms}</p>
-                                <p>
-                                    <strong>כיווני אוויר:</strong> {Array.isArray(product.airDirections) && product.airDirections.length > 0 
-                                        ? product.airDirections.join(', ') 
+                                {/* <p>
+                                    <strong>כיווני אוויר:</strong> {Array.isArray(product.airDirections) && product.airDirections.length > 0
+                                        ? product.airDirections.join(', ')
                                         : 'לא צוינו כיווני אוויר'}
+                                </p> */}
+                                  <p>
+                                    <strong>כיווני אוויר:</strong> {product.airDirections  || 'לא צוינו כיווני אוויר'}
                                 </p>
                             </div>
                         </div>
@@ -346,11 +349,17 @@ const Apartment = () => {
                         <h3>אופציות נוספות:</h3>
                         <Divider />
                         <p>{product.options?.join(', ') || 'לא צוינו אפשרויות נוספות.'}</p>
-
+                        <Divider />
                         {/* יצירת קשר */}
                         <h3>יצירת קשר:</h3>
                         <Divider />
-                        <p><strong>טלפון:</strong> {product.user?.phone || 'לא סופק מספר טלפון'}</p>
+
+                        <p><strong>טלפון:</strong> {product.user.phone || 'לא סופק מספר טלפון'}</p>
+                        
+                        <p><strong>מייל:</strong> {product.user.email || 'לא סופק דואר אלקטרוני'}</p>
+                        
+                        {/* <p><strong>כתובת:</strong> {`${product.user.address.city}, ${product.user.address.street} ${product.user.address.building}` || 'לא סופק דואר אלקטרוני'}</p> */}
+
                     </div>
                 </div>
             </Card>
