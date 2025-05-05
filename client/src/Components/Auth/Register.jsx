@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom'; // לשימוש בניווט
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import { Password } from 'primereact/password';
@@ -10,9 +11,7 @@ import axios from 'axios';
 import './Register.css';
 
 const Register = (props) => {
-    // const [showMessage, setShowMessage] = useState(false);
-    const [formData, setFormData] = useState({});
-
+    const [emailError, setEmailError] = useState('');
     const { control, formState: { errors }, handleSubmit, reset } = useForm({
         defaultValues: {
             name: '',
@@ -24,33 +23,40 @@ const Register = (props) => {
         },
     });
 
+    // יצירת ניווט
+    const navigate = useNavigate();
+
+    // פונקציית טיפול בהרשמה
     const onSubmit = async (data) => {
         try {
-            console.log("Submitting data:", data); // הדפס נתונים לבדיקה
+            setEmailError(''); // איפוס הודעת השגיאה
+            console.log("Submitting data:", data);
+
+            // שליחת בקשה לשרת
             const res = await axios.post('http://localhost:8000/auth/register', data, {
                 headers: { 'Content-Type': 'application/json' },
             });
 
             if (res.status === 201) {
-                setFormData(data);
+                // אם ההרשמה הצליחה
                 alert("Registration successful!");
-                reset(); // איפוס הטופס לאחר הצלחה
+                props.setVisible(false); // סגור את הדיאלוג
+                navigate('/Auth', { state: { email: data.email, password: data.password } }); // נווט לדף ה-Login עם הנתונים
+                reset(); // איפוס הטופס
             }
         } catch (error) {
-            console.error('Registration error:', error);
-            alert("Registration failed. Please try again.");
+            if (error.response && error.response.status === 409) {
+                setEmailError("קיים משתמש במייל הנוכחי");
+            } else {
+                console.error('Registration error:', error);
+                alert("Registration failed. Please try again.");
+            }
         }
     };
 
     const getFormErrorMessage = (name) => {
         return errors[name] && <small className="p-error">{errors[name].message}</small>;
     };
-
-    const dialogFooter = (
-        <div className="flex justify-content-center">
-            <Button label="OK" className="p-button-text" autoFocus onClick={() => setShowMessage(false)} />
-        </div>
-    );
 
     const passwordHeader = <h6>Choose a secure password</h6>;
     const passwordFooter = (
@@ -68,11 +74,10 @@ const Register = (props) => {
     return (
         <Dialog header="Register" visible={props.visible} style={{ width: '50vw' }} onHide={() => props.setVisible(false)}>
             <div className="form-demo">
-               
-
                 <div className="flex justify-content-center">
                     <div className="card">
                         <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
+                            {/* שדה שם */}
                             <div className="field">
                                 <span className="p-float-label">
                                     <Controller name="name" control={control} rules={{ required: 'Name is required.' }} render={({ field, fieldState }) => (
@@ -83,6 +88,7 @@ const Register = (props) => {
                                 {getFormErrorMessage('name')}
                             </div>
 
+                            {/* שדה אימייל */}
                             <div className="field">
                                 <span className="p-float-label">
                                     <Controller name="email" control={control} rules={{
@@ -92,13 +98,17 @@ const Register = (props) => {
                                             message: 'Invalid email address. E.g. example@email.com',
                                         },
                                     }} render={({ field, fieldState }) => (
-                                        <InputText id={field.name} {...field} className={fieldState.invalid ? 'p-invalid' : ''} />
+                                        <InputText id={field.name} {...field}
+                                            style={{ direction: 'ltr' }}
+                                            className={fieldState.invalid ? 'p-invalid' : ''} />
                                     )} />
                                     <label htmlFor="email" className={errors.email ? 'p-error' : ''}>Email*</label>
                                 </span>
                                 {getFormErrorMessage('email')}
+                                {emailError && <small className="p-error">{emailError}</small>}
                             </div>
 
+                            {/* שדה טלפון */}
                             <div className="field">
                                 <span className="p-float-label">
                                     <Controller name="phone" control={control} rules={{
@@ -115,6 +125,7 @@ const Register = (props) => {
                                 {getFormErrorMessage('phone')}
                             </div>
 
+                            {/* שדות כתובת */}
                             <div className="field">
                                 <span className="p-float-label">
                                     <Controller name="address.city" control={control} rules={{ required: 'City is required.' }} render={({ field, fieldState }) => (
@@ -153,6 +164,7 @@ const Register = (props) => {
                                 </span>
                             </div>
 
+                            {/* שדה סיסמה */}
                             <div className="field">
                                 <span className="p-float-label">
                                     <Controller name="password" control={control} rules={{ required: 'Password is required.' }} render={({ field, fieldState }) => (
@@ -163,6 +175,7 @@ const Register = (props) => {
                                 {getFormErrorMessage('password')}
                             </div>
 
+                            {/* תיבת קבלת תנאים */}
                             <div className="field-checkbox">
                                 <Controller name="accept" control={control} rules={{ required: 'You must accept the terms.' }} render={({ field, fieldState }) => (
                                     <Checkbox inputId={field.name} onChange={(e) => field.onChange(e.checked)} checked={field.value} className={fieldState.invalid ? 'p-invalid' : ''} />
@@ -170,6 +183,7 @@ const Register = (props) => {
                                 <label htmlFor="accept" className={errors.accept ? 'p-error' : ''}>I agree to the terms and conditions*</label>
                             </div>
 
+                            {/* כפתור שליחה */}
                             <Button type="submit" label="Submit" className="mt-2" />
                         </form>
                     </div>
