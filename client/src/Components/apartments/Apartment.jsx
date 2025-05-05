@@ -351,6 +351,7 @@ const Apartment = () => {
                         <h3>יצירת קשר:</h3>
                         <Divider />
                         <p><strong>טלפון:</strong> {product.user?.phone || 'לא סופק מספר טלפון'}</p>
+                        <p><strong>מייל:</strong> {product.user?.email}</p>
                     </div>
                 </div>
             </Card>
