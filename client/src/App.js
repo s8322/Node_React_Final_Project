@@ -27,8 +27,10 @@ import Add from './Components/apartments/Add';
 import Register from './Components/Auth/Register';
 import NavBarManager from './Components/NavBarManager';
 // import Apartment from './Components/apartments/Apartment';
-// import Update from './Components/users/Update';
-import Update from './Components/users/Update';
+
+import Update from './Components/apartments/Update';
+import Home from './Components/Home'; 
+
 
 function App() {
   const navigate = useNavigate()
@@ -51,25 +53,21 @@ function App() {
         <Routes>
           {/* <Route path='/home' element={<Home />} /> */}
           <Route path='/' element={<Auth />} />
-
           <Route path='/apartments' element={<Apartments />} />
           <Route path='/navBar' element={<NavBar />} />
           <Route path='/logOut' element={<LogOut />} />
           <Route path='/advertising' element={<Advertising />} />
           <Route path='/addApartment' element={<Add />} />
-
+          <Route path="/Auth" element={<Auth />} /> 
           <Route path='/r' element={<Register />} />
-          {/* <Route path='/auth' element={<Auth />} /> */}
           <Route path='/myApartments' element={<MyApartment />} />
           <Route path='/Apartment' element={<Apartment />} />
-          {/* <Route path='/apartment' element={<Apartment />} /> */}
           <Route path='/users' element={<Users />} />
           <Route path='/update' element={<Update />} />
 
-          {/* <Route path='/auth' element={<Auth />} /> */}
+          <Route path="/home" element={<Home />} />
           <Route path='/myApartments' element={<MyApartment />} />
 
-          {/* {<Route path='/products' element={<Product />} />} */}
         </Routes>
       </div>
     </PrimeReactProvider>

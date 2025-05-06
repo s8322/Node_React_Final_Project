@@ -360,6 +360,7 @@ const Apartment = () => {
                         
                         {/* <p><strong>כתובת:</strong> {`${product.user.address.city}, ${product.user.address.street} ${product.user.address.building}` || 'לא סופק דואר אלקטרוני'}</p> */}
 
+
                     </div>
                 </div>
             </Card>
