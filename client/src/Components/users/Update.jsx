@@ -1393,17 +1393,20 @@ const Update = () => {
       const res = await axios.put(`http://localhost:8000/user`, updatedUser, {
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       });
+    await alert(res.status)
 
       if (res.status === 201) {
         // getApartmentsDataById();
         setShowMessage(true);
-        dispatch(setUser(data))
+        dispatch(setUser(res.data))
         console.log(data);
 
-        // setVisible(false);
+
 
       }
     } catch (e) {
+    
+      alert("existing user!!!!")
       console.error("Failed to update user:", e);
     }
   };
@@ -1630,3 +1633,264 @@ const Update = () => {
 };
 
 export default Update;
+// import React, { useState, useEffect } from "react";
+// import { useForm, Controller } from "react-hook-form";
+// import axios from "axios";
+// import { InputText } from "primereact/inputtext";
+// import { Checkbox } from "primereact/checkbox";
+// import { Button } from "primereact/button";
+// import { Dialog } from "primereact/dialog";
+// import { classNames } from "primereact/utils";
+// import { useSelector, useDispatch } from "react-redux";
+// import { setUser } from "../../Redux/tokenSlice";
+
+// const Update = () => {
+//   const { user, token } = useSelector((state) => state.token); // Redux: משתמש ו-Token
+//   const dispatch = useDispatch();
+//   const [showMessage, setShowMessage] = useState(false);
+//   const [initialData, setInitialData] = useState(null); // נתונים ראשוניים
+
+//   const { control, handleSubmit, formState: { errors }, setValue } = useForm({
+//     defaultValues: {
+//       name: "",
+//       email: "",
+//       phone: "",
+//       city: "",
+//       neighborhood: "",
+//       street: "",
+//       building: "",
+//       view: false,
+//       sukkahBalcony: false,
+//     },
+//   });
+
+//   // שליפת נתוני המשתמש
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       try {
+//         const res = await axios.get(`http://localhost:8000/user/${user._id}`, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+//         const userData = res.data;
+//         setInitialData(userData);
+
+//         // עדכון ערכי הטופס
+//         Object.keys(userData).forEach((key) => {
+//           if (key === "address") {
+//             setValue("city", userData.address.city || "");
+//             setValue("neighborhood", userData.address.neighborhood || "");
+//             setValue("street", userData.address.street || "");
+//             setValue("building", userData.address.building || "");
+//           } else if (key === "options") {
+//             setValue("view", userData.options.includes("Scenic View"));
+//             setValue("sukkahBalcony", userData.options.includes("Sukkah Balcony"));
+//           } else {
+//             setValue(key, userData[key] || "");
+//           }
+//         });
+//       } catch (error) {
+//         console.error("Failed to fetch user data:", error);
+//       }
+//     };
+
+//     fetchUserData();
+//   }, [user._id, token, setValue]);
+
+//   const onSubmit = async (data) => {
+//     const options = [];
+//     if (data.view) options.push("Scenic View");
+//     if (data.sukkahBalcony) options.push("Sukkah Balcony");
+
+//     const updatedUser = {
+//       name: data.name,
+//       email: data.email,
+//       phone: data.phone,
+//       address: {
+//         city: data.city,
+//         neighborhood: data.neighborhood,
+//         street: data.street,
+//         building: data.building,
+//       },
+//       options,
+//     };
+
+//     try {
+//       const res = await axios.put(`http://localhost:8000/user/${user._id}`, updatedUser, {
+//         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+//       });
+
+//       if (res.status === 200) {
+//         setShowMessage(true);
+//         dispatch(setUser(res.data)); // עדכון Redux
+//       }
+//     } catch (error) {
+//       console.error("Failed to update user:", error);
+//     }
+//   };
+
+//   const getFormErrorMessage = (name) => {
+//     return errors[name] && <small className="p-error">{errors[name].message}</small>;
+//   };
+
+//   if (!initialData) return <p>Loading...</p>;
+
+//   return (
+//     <div>
+//       <Dialog visible={showMessage} onHide={() => setShowMessage(false)} position="top">
+//         <div className="flex justify-content-center flex-column pt-6 px-3">
+//           <h5>User Updated Successfully!</h5>
+//         </div>
+//       </Dialog>
+
+//       <div className="flex justify-content-center">
+//         <div className="card">
+//           <h5 className="text-center">Update User</h5>
+//           <form onSubmit={handleSubmit(onSubmit)} className="p-fluid">
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="name"
+//                   control={control}
+//                   rules={{ required: "Name is required." }}
+//                   render={({ field, fieldState }) => (
+//                     <InputText
+//                       id={field.name}
+//                       {...field}
+//                       className={classNames({ "p-invalid": fieldState.invalid })}
+//                     />
+//                   )}
+//                 />
+//                 <label htmlFor="name" className={classNames({ "p-error": errors.name })}>
+//                   Name*
+//                 </label>
+//               </span>
+//               {getFormErrorMessage("name")}
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="email"
+//                   control={control}
+//                   rules={{ required: "Email is required." }}
+//                   render={({ field, fieldState }) => (
+//                     <InputText
+//                       id={field.name}
+//                       type="email"
+//                       {...field}
+//                       className={classNames({ "p-invalid": fieldState.invalid })}
+//                     />
+//                   )}
+//                 />
+//                 <label htmlFor="email" className={classNames({ "p-error": errors.email })}>
+//                   Email*
+//                 </label>
+//               </span>
+//               {getFormErrorMessage("email")}
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="phone"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <InputText id={field.name} {...field} />
+//                   )}
+//                 />
+//                 <label htmlFor="phone">Phone</label>
+//               </span>
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="city"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <InputText id={field.name} {...field} />
+//                   )}
+//                 />
+//                 <label htmlFor="city">City</label>
+//               </span>
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="neighborhood"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <InputText id={field.name} {...field} />
+//                   )}
+//                 />
+//                 <label htmlFor="neighborhood">Neighborhood</label>
+//               </span>
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="street"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <InputText id={field.name} {...field} />
+//                   )}
+//                 />
+//                 <label htmlFor="street">Street</label>
+//               </span>
+//             </div>
+
+//             <div className="field">
+//               <span className="p-float-label">
+//                 <Controller
+//                   name="building"
+//                   control={control}
+//                   render={({ field }) => (
+//                     <InputText id={field.name} type="number" {...field} />
+//                   )}
+//                 />
+//                 <label htmlFor="building">Building</label>
+//               </span>
+//             </div>
+
+//             {/* Checkboxes */}
+//             {/* <div className="field-checkbox">
+//               <Controller
+//                 name="view"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <Checkbox
+//                     inputId={field.name}
+//                     checked={field.value}
+//                     onChange={(e) => field.onChange(e.checked)}
+//                   />
+//                 )}
+//               />
+//               <label htmlFor="view">Scenic View</label>
+//             </div>
+
+//             <div className="field-checkbox">
+//               <Controller
+//                 name="sukkahBalcony"
+//                 control={control}
+//                 render={({ field }) => (
+//                   <Checkbox
+//                     inputId={field.name}
+//                     checked={field.value}
+//                     onChange={(e) => field.onChange(e.checked)}
+//                   />
+//                 )}
+//               />
+//               <label htmlFor="sukkahBalcony">Sukkah Balcony</label>
+//             </div> */}
+
+//             <Button type="submit" label="Update" className="mt-2" />
+//           </form>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Update;

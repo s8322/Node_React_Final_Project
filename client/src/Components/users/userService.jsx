@@ -6,7 +6,7 @@ export const UserService = {
                 const res = await axios.get(`http://localhost:8000/user`)
                 if (res.status === 200) {
                     // console.log("carsUser",res.data)
-                    // console.log(res.data);
+                    console.log(res.data);
                     return res.data;
                 }
             } catch (e) {

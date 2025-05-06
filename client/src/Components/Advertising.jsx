@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Add from "./apartments/Add"; // Import the Add component
 import Update from './apartments/Update';
 import { useNavigate } from 'react-router-dom';
+import { ApartmentService } from './apartments/ApartmentService';
 
 const Advertising = () => {
     const dispatch = useDispatch();

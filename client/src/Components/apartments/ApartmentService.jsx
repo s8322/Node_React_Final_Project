@@ -12,7 +12,7 @@ export const ApartmentService = {
                 return [];
             }
         },
-        
+    
         getProductsMini() {
             return Promise.resolve(this.getApartmentsData().slice(0, 5));
         },
@@ -28,7 +28,9 @@ export const ApartmentService = {
     
         getProductsWithOrders() {
             return Promise.resolve(this.getProductsWithOrdersData());
-        }
+        },
+      
+    
     };
     export default ApartmentService 
   

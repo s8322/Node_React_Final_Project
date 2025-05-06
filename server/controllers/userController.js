@@ -1,6 +1,6 @@
 const User = require("../models/User")
 const bcrypt = require('bcrypt')
-const {createAddress,getAllAddress,getAddressById,deleteAddress } = require("./address")
+const { createAddress, getAllAddress, getAddressById, deleteAddress } = require("./address")
 
 const getAllUser = async (req, res) => {
     const users = await User.find().sort({ name: 1 }).populate('address').lean().lean()
@@ -20,15 +20,20 @@ const getUserById = async (req, res) => {
     res.status(201).json(user)
 }
 const updateUser = async (req, res) => {
-    const {_id}=req.user
+    const { _id } = req.user
     console.log(req.body);
 
     const { name, email, phone, address, password, } = req.body
-    console.log(email,_id,password);
+    console.log(email, _id, password);
 
-    if (!_id || !email|| !password)
-
+    if (!_id || !email || !password)
         return res.status(400).json({ message: 'missing required fields' })
+    console.log("Checking for duplicate user...");
+    const duplicate = await User.findOne({ email }).lean();
+    
+    if (duplicate && duplicate._id != _id) {
+        return res.status(409).json({ Message: 'User already exists.' });
+    }
     const user = await User.findById(_id).exec()
     if (!user) {
         return res.status(400).json({ message: "User not found" })
@@ -40,7 +45,7 @@ const updateUser = async (req, res) => {
     user.password = hashedPwd
     const updatedUser = await user.save()
     const users = await User.find().lean()
-    res.status(201).json(users)
+    res.status(201).json(user)
 }
 const deleteUser = async (req, res) => {
     const { _id } = req.body

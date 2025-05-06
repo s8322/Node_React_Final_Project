@@ -27,14 +27,14 @@
 // // // //         ApartmentService.getProducts().then((data) => setProducts(data.slice(0, 12)));
 // // // //     }, [products]);
 
-    
+
 
 // // // //     const perm = async (id) => {
 // // // //         try {
 // // // //             const res = await axios.put('http://localhost:8000/apartment/perm', { _id: id });
 // // // //             if (res.status === 200) {
 // // // //                 const updatedProduct = res.data; 
-    
+
 // // // //                 setProducts(prevProducts =>
 // // // //                     prevProducts.map(p =>
 // // // //                         p._id === updatedProduct._id ? updatedProduct : p
@@ -46,7 +46,7 @@
 // // // //         }
 // // // //     };
 
-    
+
 
 // // // // const deleteApart = async (id) => {   
 // // // //     try {
@@ -65,8 +65,8 @@
 // // // //     } catch (e) {
 // // // //         return [];
 // // // //     }}
-    
-    
+
+
 
 // // // //     const listItem = (product, index) => {
 // // // //         return (
@@ -93,7 +93,7 @@
 // // // //                             <div className="text-2xl font-bold text-900">{`${product.size} מ"ר ${product.numOfRooms} חדרים`}</div>
 // // // //                             {/* <Rating value={product.rating} readOnly cancel={false}></Rating> */}
 // // // //                             {/* <span className="font-semibold">{product.description}</span> */}
-                            
+
 // // // //                             <div className="flex align-items-center gap-3">
 // // // //                                 <span className="font-semibold">{product.description}</span>
 
@@ -119,7 +119,7 @@
 // // // //                             }}
 // // // //                             onClick={() => {
 // // // //                                 perm(product._id);
-                                
+
 // // // //                             }}
 // // // //                         ></Button>
 // // // //                     )}
@@ -193,7 +193,7 @@
 
 // // // //         if (!product.permission && roles==="User") {
 
-            
+
 // // // //             return;
 // // // //         }
 
@@ -209,7 +209,7 @@
 // // // //             <div className="flex justify-content-end">
 // // // //                 <DataViewLayoutOptions layout={layout} onChange={(e) => setLayout(e.value)} />
 // // // //             </div>
-            
+
 // // // //         {/* <div className="card">
 // // // //             <DataView value={apartments} listTemplate={listTemplate} layout={layout} header={header()} />
 // // // //         </div> */}
@@ -236,11 +236,11 @@
 
 // // // // // const Apartments = () => {
 // // // // //     const dispatch = useDispatch();
-    
+
 // // // // //     // 1. השתמש ב-apartments מחנות Redux
 // // // // //     const apartments = useSelector((state) => state.apartments.items);
 // // // // //     const loading = useSelector((state) => state.apartments.loading);
-    
+
 // // // // //     // הוסף כאן את ה-useState, בחלק העליון של רכיב הקומפוננטה
 // // // // //     const [layout, setLayout] = React.useState('grid'); 
 
@@ -340,7 +340,7 @@
 
 // // // // // const Apartments = () => {
 // // // // //     const dispatch = useDispatch();
-    
+
 // // // // //     const apartments = useSelector((state) => state.apartments.items); // שליפת הדירות מה-state
 // // // // //     const loading = useSelector((state) => state.apartments.loading); // בדוק אם הנתונים עדיין טוענים
 
@@ -1018,14 +1018,31 @@ import { DataView, DataViewLayoutOptions } from 'primereact/dataview';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { classNames } from 'primereact/utils';
-import axios from 'axios';
+import Update from '../apartments/Update';
 
+import axios from 'axios';
 const Apartments = () => {
     const { roles } = useSelector((state) => state.token);
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
-    const [permission, setPermission]=useState([]);
+    const [permission, setPermission] = useState([]);
     const [layout, setLayout] = useState('grid');
+    const [visibleUpdate, setVisibleUpdate] = useState(false); // נראות הדיאלוג של Update
+    const [selectedApartment, setSelectedApartment] = useState(null);
+
+    // const getApartmentsDataById = () => {
+    //     axios.get(`http://localhost:8000/apartment/userid/${user._id}`, {
+    //         headers: { Authorization: `Bearer ${token}` }
+    //     })
+    //         .then(res => {
+    //             if (res.status === 200 && Array.isArray(res.data)) {
+    //                 setProducts(res.data);
+    //             }
+    //         })
+    //         .catch(e => {
+    //             console.error(e);
+    //         });
+    // };
 
     // Fetch apartments from service
     useEffect(() => {
@@ -1040,7 +1057,7 @@ const Apartments = () => {
                 setProducts((prevProducts) =>
                     prevProducts.map((p) =>
                         p._id === updatedProduct._id ? updatedProduct : p
-                
+
                     )
                 );
                 setPermission(res.data)
@@ -1116,6 +1133,7 @@ const Apartments = () => {
                                         deleteApart(product._id);
                                     }}
                                 ></Button>
+
                                 <Button
                                     icon="pi pi-refresh"
                                     style={{
@@ -1179,6 +1197,8 @@ const Apartments = () => {
                                     deleteApart(product._id);
                                 }}
                             ></Button>
+                            <Button icon="pi pi-update" rounded severity="secondary" aria-label="Bookmark" onClick={() => { setSelectedApartment(product); setVisibleUpdate(true) }} />
+
                             <Button
                                 icon="pi pi-refresh"
                                 style={{
@@ -1224,6 +1244,10 @@ const Apartments = () => {
                 layout={layout}
                 header={header()}
             />
+            {visibleUpdate ? <Update visible={visibleUpdate} setVisible={setVisibleUpdate} apartment={selectedApartment} 
+            getApartmentsDataById={ ApartmentService.getApartmentsData}
+            ></Update> : <></>}
+
         </div>
     );
 };

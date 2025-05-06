@@ -494,6 +494,7 @@ const Update = ({ visible, setVisible, apartment, getApartmentsDataById }) => {
         setVisible(false);
       }
     } catch (e) {
+      alert
       console.error("Failed to update apartment:", e);
     }
   };

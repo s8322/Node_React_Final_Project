@@ -25,8 +25,21 @@ const Users = () => {
         } catch (e) {
             return [];
         }}
+        const func=async()=>{
+            try {
+                const res = await axios.get(`http://localhost:8000/user`)
+                if (res.status === 200) {
+                    // console.log("carsUser",res.data)
+                    console.log(res.data);
+                    return res.data;
+                }
+            } catch (e) {
+                return [];
+            }
+        }
     useEffect(() => {
-        UserService.getCustomersXLarge().then((data) => setCustomers(data));
+        // UserService.getCustomersXLarge().then((data) => setCustomers(data));
+        func()
     }, []);
 
     return (

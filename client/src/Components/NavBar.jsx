@@ -111,7 +111,7 @@ function NavBar() {
                     />
                     <Button
                         label={`שלום, ${user ? user.name : 'אורח'}`}
-                        onClick={() => navigate('/update-user')} // ניווט לעדכון משתמש
+                        onClick={() => navigate('../update')} // ניווט לעדכון משתמש
                         className="p-button-text p-button-plain"
                     />
                 </div>
@@ -134,8 +134,10 @@ function NavBar() {
         },
         {
             label: 'LogOut',
-            icon: 'pi pi-sign-out',
-            command: () => navigate('/log-out'),
+            icon: 'pi pi-envelope',
+            command: () => {
+                navigate('../logOut');
+            },
         },
     ];
 
